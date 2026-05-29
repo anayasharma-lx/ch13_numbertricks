@@ -1,548 +1,470 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Number Trick Studio</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Number Trick Studio — Ch. 13</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f5f4f0; --surface:#fff; --surface2:#f0ede8; --border:#d8d4cc;
-  --text:#1a1814; --text2:#5a5650; --text3:#9a958e;
-  --blue:#2c5f9e; --red:#c0392b; --green:#1a7a4a; --orange:#e08020;
-  --font:'DM Sans',-apple-system,sans-serif;
-  --mono:'DM Mono',ui-monospace,monospace;
+  --bg:#0f0d0b;--surface:#181512;--surface2:#201d18;
+  --chalk:#f0ece3;--chalk2:#b8b2a7;--chalk3:#716b62;--rule:#2a2520;
+  --blue:#6ba3d6;--green:#5dbf8a;--amber:#e8a840;--orange:#e0943a;--red:#e07070;
+  --display:'Playfair Display',Georgia,serif;
+  --mono:'DM Mono',monospace;--body:'DM Sans',sans-serif;
 }
-html{scroll-behavior:smooth}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5}
-.wrap{max-width:880px;margin:0 auto;padding:32px 20px 56px}
-.lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--text2);margin-bottom:8px}
-.title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em}
-.subtitle{font-size:14px;color:var(--text2);margin-bottom:24px}
-.card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:22px}
-.card+.card{margin-top:14px}
-.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px}
+html,body{background:var(--bg);color:var(--chalk)}
+body{font-family:var(--body);min-height:100vh;-webkit-font-smoothing:antialiased;padding:0}
 
-/* Tabs */
-.tabs{display:flex;gap:4px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px}
-.tab{flex:1;padding:9px 12px;border:none;background:transparent;color:var(--text2);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;border-radius:7px;transition:.15s}
-.tab.active{background:var(--surface);color:var(--text);font-weight:600;border:1.5px solid var(--border);box-shadow:0 1px 2px rgba(0,0,0,.03)}
+/* HEADER */
+.header{padding:20px 24px 16px;border-bottom:1px solid var(--rule)}
+.chap-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--chalk3);margin-bottom:7px}
+.main-title{font-family:var(--display);font-size:clamp(26px,6.5vw,54px);font-weight:900;
+  line-height:.95;color:var(--chalk)}
+.main-title em{font-style:italic;color:var(--amber)}
+.subtitle{font-family:var(--mono);font-size:12px;color:var(--chalk3);margin-top:8px;
+  max-width:540px;line-height:1.65}
 
-/* Pills (trick selectors) */
-.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
-.pill{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;transition:.15s;background:var(--surface);border:1.5px solid var(--border);color:var(--text2);font-family:var(--font)}
-.pill:hover{border-color:var(--text3)}
-.pill.active{background:var(--surface2);border-color:var(--text3);color:var(--text);font-weight:600}
-.pill .out{margin-left:6px;color:var(--text3);font-family:var(--mono);font-size:11px}
-.pill.active .out{color:var(--blue)}
+/* MAIN TABS */
+.tab-bar{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  border-bottom:1px solid var(--rule);scrollbar-width:none;background:var(--surface)}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:12px 22px;border:none;border-bottom:2px solid transparent;
+  background:transparent;font-family:var(--display);font-size:18px;letter-spacing:.04em;
+  color:var(--chalk);opacity:.35;cursor:pointer;white-space:nowrap;flex-shrink:0;
+  margin-bottom:-1px;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.tab-btn.active{opacity:1;border-bottom-color:var(--amber)}
 
-/* Buttons */
-.btn{padding:9px 18px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:.15s}
-.btn:hover{border-color:var(--text3)}
-.btn-primary{background:var(--blue);border-color:var(--blue);color:#fff}
-.btn-primary:hover{background:#234e85;border-color:#234e85}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+/* TRICK PILLS */
+.tricks-bar{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding:10px 24px;gap:6px;border-bottom:1px solid var(--rule);
+  background:var(--surface)}
+.tricks-bar::-webkit-scrollbar{display:none}
+.trick-pill{padding:7px 14px;border:1px solid var(--rule);background:transparent;
+  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--chalk3);
+  cursor:pointer;flex-shrink:0;white-space:nowrap;transition:all .12s;
+  -webkit-tap-highlight-color:transparent}
+.trick-pill:hover{border-color:var(--chalk3);color:var(--chalk)}
+.trick-pill.active{background:var(--amber);color:var(--bg);border-color:var(--amber)}
+.trick-pill .tout{font-weight:400;opacity:.6;margin-left:6px}
 
-/* Two column grid */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media (max-width:720px){.grid2{grid-template-columns:1fr}}
+/* MAIN LAYOUT */
+.main-layout{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)}
+@media(max-width:580px){.main-layout{grid-template-columns:1fr}}
 
-/* Slider + number display */
-.slider-row{display:flex;align-items:center;gap:14px}
-.slider-row input[type=range]{flex:1;cursor:pointer;height:4px;border-radius:2px;accent-color:var(--blue);outline:none}
-.num-box{min-width:64px;height:54px;padding:0 14px;border-radius:10px;background:var(--surface2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;color:var(--text);font-family:var(--mono)}
+/* LEFT PANEL */
+.left-panel{border-right:1px solid var(--rule);display:flex;flex-direction:column}
+.lp-head{padding:14px 20px;border-bottom:1px solid var(--rule);
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--chalk3)}
 
-/* Step rows */
-.steps{display:flex;flex-direction:column;gap:6px;margin-top:14px}
-.step{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:9px;background:var(--surface2);border:1.5px solid var(--border);transition:.2s}
-.step.done{background:#fff;border-color:var(--text3)}
-.step.current{background:#fff;border-color:var(--blue);box-shadow:0 0 0 3px rgba(44,95,158,.08)}
-.step-num{width:28px;height:28px;border-radius:7px;flex-shrink:0;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text3);font-family:var(--mono)}
-.step.done .step-num,.step.current .step-num{background:var(--blue);border-color:var(--blue);color:#fff}
-.step-body{flex:1;min-width:0}
-.step-desc{font-size:13px;color:var(--text2);font-weight:500}
-.step.done .step-desc{color:var(--text)}
-.step-calc{font-size:12px;font-family:var(--mono);color:var(--text3);margin-top:2px}
-.step-calc .from{color:var(--text3)}
-.step-calc .arrow{color:var(--text3);margin:0 6px}
-.step-calc .to{color:var(--blue);font-weight:500}
+/* SLIDER */
+.slider-section{padding:14px 20px;border-bottom:1px solid var(--rule)}
+.sl-row{display:flex;align-items:center;gap:12px}
+.sl-row input[type=range]{flex:1;height:3px;background:var(--rule);outline:none;cursor:pointer;
+  -webkit-appearance:none;appearance:none;border-radius:2px}
+.sl-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:22px;height:22px;border-radius:50%;background:var(--amber);
+  border:3px solid var(--bg);cursor:pointer}
+.num-box{min-width:64px;height:54px;padding:0 12px;background:var(--surface2);
+  border:1px solid var(--rule);display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:28px;letter-spacing:.02em;color:var(--amber)}
 
-/* Result */
-.result{padding:18px;border-radius:10px;background:#f0f7f2;border:1.5px solid #c4dcc9;text-align:center;margin-top:14px}
-.result-label{font-size:12px;color:var(--text2);margin-bottom:4px}
-.result-num{font-size:40px;font-weight:600;color:var(--green);font-family:var(--mono);line-height:1.1}
-.result-note{font-size:12px;color:var(--text2);margin-top:6px}
+/* STEPS */
+.steps-list{padding:10px 20px;display:flex;flex-direction:column;gap:6px}
+.step-row{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  background:var(--surface2);border:1px solid var(--rule)}
+.step-row.done{background:rgba(232,168,64,.06);border-color:rgba(232,168,64,.25)}
+.step-row.current{border-color:var(--amber)}
+.step-num{width:26px;height:26px;background:var(--surface);border:1px solid var(--rule);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:10px;font-weight:700;color:var(--chalk3);flex-shrink:0}
+.step-row.done .step-num,.step-row.current .step-num{background:var(--amber);border-color:var(--amber);color:var(--bg)}
+.step-desc{font-size:13px;color:var(--chalk2);flex:1}
+.step-row.done .step-desc{color:var(--chalk)}
+.step-calc{font-family:var(--mono);font-size:12px;color:var(--chalk3)}
+.step-arrow{font-family:var(--mono);font-size:11px;color:var(--chalk3);margin:0 4px}
+.step-result{font-family:var(--mono);font-size:12px;color:var(--amber);font-weight:700}
 
-/* Algebra panel */
-.alg-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--border)}
-.alg-row+.alg-row{margin-top:5px}
-.alg-num{width:26px;height:26px;border-radius:6px;background:var(--surface);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text3);font-family:var(--mono);flex-shrink:0}
-.alg-row.done .alg-num{background:var(--blue);border-color:var(--blue);color:#fff}
-.alg-body{flex:1}
-.alg-desc{font-size:11px;color:var(--text2);font-weight:500;margin-bottom:1px}
-.alg-expr{font-size:14px;font-weight:500;color:var(--text3);font-family:var(--mono)}
-.alg-row.done .alg-expr{color:var(--text)}
-.alg-row.final .alg-expr{color:var(--green);font-weight:600}
+/* RESULT BOX */
+.result-box{padding:18px 20px;text-align:center;background:rgba(93,191,138,.08);
+  border-top:1px solid rgba(93,191,138,.2);margin-top:auto}
+.rb-lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--chalk3);margin-bottom:6px}
+.rb-num{font-family:var(--display);font-size:52px;letter-spacing:.02em;color:var(--green);line-height:1}
+.rb-note{font-family:var(--mono);font-size:11px;color:var(--chalk3);margin-top:4px}
 
-/* Insight box */
-.insight{background:#fff8f0;border:1.5px solid #f0d8c0;color:#6b4400;border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.65;margin-top:14px}
-.insight strong{color:#5a3800}
+/* STEP CONTROLS */
+.ctrl-row{padding:12px 20px;border-top:1px solid var(--rule);display:flex;gap:8px;flex-wrap:wrap}
+.c-btn{padding:7px 14px;border:1px solid var(--rule);background:transparent;
+  font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--chalk3);cursor:pointer;transition:all .12s;
+  -webkit-tap-highlight-color:transparent}
+.c-btn:hover{border-color:var(--chalk3);color:var(--chalk)}
+.c-btn.primary{background:var(--amber);border-color:var(--amber);color:var(--bg)}
 
-/* Date trick specific */
-.date-display{font-size:20px;font-weight:600;color:var(--text);font-family:var(--mono);margin-top:4px}
-.date-display .sub{font-size:13px;color:var(--text2);margin-left:8px;font-family:var(--font);font-weight:400}
-.step-val{font-size:14px;font-weight:600;color:var(--blue);font-family:var(--mono)}
-.step-val.pending{color:var(--text3);font-weight:400}
+/* RIGHT PANEL — algebra */
+.right-panel{padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.rp-head{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--chalk3);margin-bottom:4px}
+.alg-intro{font-size:12.5px;color:var(--chalk2);line-height:1.6;margin-bottom:8px}
+.alg-row{display:flex;align-items:center;gap:10px;padding:8px 12px;
+  background:var(--surface2);border:1px solid var(--rule)}
+.alg-row.done{background:rgba(232,168,64,.06);border-color:rgba(232,168,64,.2)}
+.alg-row.final{background:rgba(93,191,138,.08);border-color:rgba(93,191,138,.25)}
+.ar-num{width:22px;height:22px;background:var(--surface);border:1px solid var(--rule);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:10px;font-weight:700;color:var(--chalk3);flex-shrink:0}
+.alg-row.done .ar-num{background:var(--amber);border-color:var(--amber);color:var(--bg)}
+.ar-desc{font-size:12px;color:var(--chalk2);flex:1}
+.ar-expr{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--chalk3)}
+.alg-row.done .ar-expr{color:var(--amber)}
+.alg-row.final .ar-expr{color:var(--green)}
+.alg-insight{padding:12px 14px;background:rgba(232,168,64,.06);border:1px solid rgba(232,168,64,.15);
+  font-family:var(--mono);font-size:11px;color:var(--chalk2);line-height:1.7;margin-top:4px}
+.alg-insight strong{color:var(--amber)}
 
-.ic-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;font-size:13px}
-.ic-row+.ic-row{border-top:1px solid var(--border)}
-.ic-row .label{color:var(--text2)}
-.ic-row .val{font-family:var(--mono);color:var(--text);font-weight:500}
+/* DATE TRICK */
+.date-layout{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)}
+@media(max-width:560px){.date-layout{grid-template-columns:1fr}}
+.date-left,.date-right{padding:18px 20px}
+.date-right{border-left:1px solid var(--rule)}
+.date-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.date-pill{padding:5px 12px;border:1px solid var(--rule);background:transparent;
+  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--chalk3);
+  cursor:pointer;transition:all .12s;-webkit-tap-highlight-color:transparent}
+.date-pill.active{background:var(--amber);color:var(--bg);border-color:var(--amber)}
+.date-pill:hover:not(.active){color:var(--chalk);border-color:var(--chalk3)}
+.date-display{font-family:var(--display);font-size:28px;letter-spacing:.04em;
+  color:var(--amber);margin-bottom:14px}
+.date-display span{font-family:var(--body);font-size:14px;color:var(--chalk3);margin-left:8px}
+.ic-rows{border:1px solid var(--rule)}
+.ic-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px;border-bottom:1px solid var(--rule);font-size:12.5px}
+.ic-row:last-child{border-bottom:none}
+.ic-lbl{color:var(--chalk2)}
+.ic-val{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--chalk)}
+.ic-val.big{font-size:18px;color:var(--amber)}
+.step-vis{background:var(--surface2);border:1px solid var(--rule);
+  padding:12px 14px;font-family:var(--mono);font-size:12px;color:var(--chalk2);
+  line-height:2;margin-top:10px;white-space:pre}
+.sv-hl{color:var(--amber);font-weight:700}
+.sv-green{color:var(--green)}
+.decode-inp{padding:8px 12px;border:1px solid var(--rule);background:var(--surface2);
+  font-family:var(--display);font-size:18px;color:var(--chalk);outline:none;
+  width:100%;text-align:center;-moz-appearance:textfield;transition:border .12s;margin:8px 0}
+.decode-inp::-webkit-inner-spin-button{-webkit-appearance:none}
+.decode-inp:focus{border-color:var(--amber)}
+.decode-result{font-family:var(--mono);font-size:12px;padding:10px 12px;
+  background:rgba(93,191,138,.1);border:1px solid rgba(93,191,138,.25);color:var(--green)}
+.decode-err{background:rgba(224,112,112,.1);border-color:rgba(224,112,112,.25);color:var(--red)}
 
-.decode-box{padding:14px;border-radius:10px;background:#f0f7f2;border:1.5px solid #c4dcc9;text-align:center;margin-top:10px}
-.decode-month{font-size:24px;font-weight:600;color:var(--green);margin-top:4px}
-.decode-calc{font-size:12px;color:var(--text2);margin-top:6px;font-family:var(--mono)}
-
-input[type=number]{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--text);padding:10px 12px;font-size:15px;font-family:var(--mono);font-weight:500;outline:none}
-input[type=number]:focus{border-color:var(--blue)}
-.err{color:var(--red);font-size:12px;margin-top:6px}
-
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+/* INSIGHT */
+.insight-row{padding:16px 24px;display:grid;grid-template-columns:3px 1fr;gap:14px;
+  border-top:1px solid var(--rule)}
+.ins-bar{background:var(--amber)}
+.ins-text{font-size:13px;line-height:1.75;color:var(--chalk2)}
+.ins-text strong{color:var(--chalk)}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <div class="lbl">Chapter 6.2 — Think of a Number</div>
-  <div class="title">Number Trick Studio</div>
-  <div class="subtitle">See why "magic" number tricks always work — and prove it with algebra.</div>
+<div class="header">
+  <div class="chap-tag">Ch. 13 · Number Patterns &amp; Tricks</div>
+  <div class="main-title">Number Trick <em>Studio</em></div>
+  <div class="subtitle">Every number trick is an algebraic identity in disguise. See the steps, then watch x replace your number and prove the trick works for everyone.</div>
+</div>
 
-  <div class="tabs">
-    <button class="tab active" data-view="num">Think of a Number</button>
-    <button class="tab" data-view="date">The Date Trick</button>
-  </div>
+<div class="tab-bar">
+  <button class="tab-btn active" data-t="num">Think of a Number</button>
+  <button class="tab-btn" data-t="date">The Date Trick</button>
+</div>
 
-  <!-- ============ THINK OF A NUMBER ============ -->
-  <div id="view-num">
-    <div class="lbl">Choose a trick</div>
-    <div class="pills" id="trick-pills"></div>
+<!-- ═══ NUMBER TRICKS ═══ -->
+<div id="view-num">
+  <div class="tricks-bar" id="tricks-bar"></div>
 
-    <div class="grid2">
-      <div>
-        <div class="card">
-          <div class="card-title">Step 1 — Think of any number</div>
-          <div class="slider-row">
-            <input type="range" id="num-input" min="1" max="20" value="7">
-            <div class="num-box" id="num-display">7</div>
-          </div>
-          <div class="steps" id="steps-num"></div>
-          <div class="btn-row" style="margin-top:14px" id="num-controls"></div>
-          <div id="num-result"></div>
+  <div class="main-layout">
+    <div class="left-panel">
+      <div class="lp-head">Step 1 — Think of any number</div>
+      <div class="slider-section">
+        <div class="sl-row">
+          <input type="range" id="num-sl" min="1" max="20" value="7">
+          <div class="num-box" id="num-box">7</div>
         </div>
       </div>
+      <div class="steps-list" id="steps-list"></div>
+      <div id="result-area"></div>
+      <div class="ctrl-row" id="ctrl-row"></div>
+    </div>
 
-      <div>
-        <div class="card">
-          <div class="card-title">Why it always works — algebra</div>
-          <div style="font-size:13px;color:var(--text2);margin-bottom:12px">
-            Instead of a specific number, use the letter <strong style="color:var(--blue);font-family:var(--mono)">x</strong> to represent <em>any</em> number:
-          </div>
-          <div class="alg-row done">
-            <div class="alg-num">0</div>
-            <div class="alg-body">
-              <div class="alg-desc">Think of a number</div>
-              <div class="alg-expr">x</div>
-            </div>
-          </div>
-          <div id="alg-num"></div>
-        </div>
-        <div class="insight">
-          <strong>The trick:</strong> algebra shows us that all the x terms cancel out in the end — so it doesn't matter what number you started with. Try the same trick with your birth year, or 100, or 0!
-        </div>
+    <div class="right-panel">
+      <div class="rp-head">The algebra — why x cancels out</div>
+      <div class="alg-intro">Use <strong style="color:var(--amber)">x</strong> instead of a specific number. Watch all the x terms cancel at the end.</div>
+      <div style="padding:8px 12px;background:var(--surface2);border:1px solid rgba(232,168,64,.25);margin-bottom:8px">
+        <div style="font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3)">Start</div>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--amber)">x</div>
       </div>
+      <div id="alg-steps"></div>
+      <div class="alg-insight" id="alg-insight" style="display:none"></div>
     </div>
   </div>
 
-  <!-- ============ THE DATE TRICK ============ -->
-  <div id="view-date" style="display:none">
-    <div class="lbl">Choose a special date to test the trick</div>
-    <div class="pills" id="date-pills"></div>
+  <div class="insight-row">
+    <div class="ins-bar"></div>
+    <p class="ins-text">Every trick adds and subtracts the same quantity — so <strong>x disappears</strong>. The result is a fixed constant that doesn't depend on x at all. This is an <strong>algebraic identity</strong>, not a coincidence.</p>
+  </div>
+</div>
 
-    <div class="grid2">
-      <div>
-        <div class="card">
-          <div class="card-title">Follow these steps with your date</div>
-          <div class="date-display" id="date-display"></div>
-          <div class="btn-row" style="margin-top:12px" id="date-controls"></div>
-          <div class="steps" id="steps-date"></div>
-          <div id="date-result"></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="card">
-          <div class="card-title">Why it works — the algebra</div>
-          <div id="alg-date"></div>
-          <div style="margin-top:12px;padding:11px 14px;border-radius:8px;background:var(--surface2);border:1.5px solid var(--border);font-size:12px;color:var(--text2);line-height:1.8">
-            Final = <strong style="font-family:var(--mono);color:var(--text)">100M + 165 + D</strong><br>
-            Subtract 165 → <strong style="font-family:var(--mono);color:var(--text)">100M + D</strong><br>
-            Last 2 digits = D, before that = M ✓
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Mind-reader mode — decode any answer</div>
-          <div style="font-size:12px;color:var(--text2);margin-bottom:10px">
-            Ask a friend to do the steps on <em>their</em> birthday. They tell you the final number — you guess the date!
-          </div>
-          <input type="number" id="decode-input" placeholder="Enter their final answer...">
-          <div id="decode-result"></div>
-        </div>
-      </div>
+<!-- ═══ DATE TRICK ═══ -->
+<div id="view-date" style="display:none">
+  <div class="date-layout">
+    <div class="date-left">
+      <div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);margin-bottom:10px">Choose a special date</div>
+      <div class="date-pills" id="date-pills"></div>
+      <div class="date-display" id="date-display"></div>
+      <div class="ic-rows" id="date-steps-row"></div>
+      <div class="step-vis" id="date-step-vis"></div>
     </div>
+
+    <div class="date-right">
+      <div style="font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);margin-bottom:10px">The algebra</div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--chalk2);line-height:1.85;padding:12px 14px;background:rgba(232,168,64,.06);border:1px solid rgba(232,168,64,.15);white-space:pre;overflow-x:auto">Let M = month number, D = day number
+
+Step 1: M × 5      = 5M
+Step 2: + 6        = 5M + 6
+Step 3: × 4        = 20M + 24
+Step 4: + 9        = 20M + 33
+Step 5: × 5        = 100M + 165
+Step 6: + D        = 100M + 165 + D
+        ─────────────────────────────
+Subtract 165 →     100M + D
+
+Last 2 digits = D  <span style="color:#5dbf8a">← your day</span>
+Remaining digits = M  <span style="color:#5dbf8a">← your month</span></div>
+
+      <div style="margin-top:14px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);margin-bottom:8px">Mind-reader mode</div>
+      <div style="font-size:12.5px;color:var(--chalk2);line-height:1.6;margin-bottom:8px">Ask a friend to do the steps on their birthday and tell you the final number. Enter it here to decode their date instantly.</div>
+      <input type="number" class="decode-inp" id="decode-inp" placeholder="Enter their final answer…">
+      <div id="decode-res" style="display:none"></div>
+    </div>
+  </div>
+
+  <div class="insight-row">
+    <div class="ins-bar"></div>
+    <p class="ins-text">The trick works because the operations create <strong>100M + D</strong> inside the result (plus a constant 165 you subtract). In base 10, multiplying by 100 pushes M two decimal places left — leaving D in the units. <strong>The structure of our number system makes this possible.</strong></p>
   </div>
 </div>
 
 <script>
-// ============ DATA ============
-const TRICKS = [
-  { name:'Classic 2', final:2, steps:[
-    {op:'× 2', desc:'Double it', algIn:'x', algOut:'2x'},
-    {op:'+ 4', desc:'Add 4', algIn:'2x', algOut:'2x + 4'},
-    {op:'÷ 2', desc:'Halve it', algIn:'2x + 4', algOut:'x + 2'},
-    {op:'− n', desc:'Subtract your number', algIn:'x + 2', algOut:'2'}
-  ], fns:[n=>2*n, n=>n+4, n=>n/2, (n,orig)=>n-orig] },
-  { name:'Triple 3', final:3, steps:[
-    {op:'× 3', desc:'Triple it', algIn:'x', algOut:'3x'},
-    {op:'+ 9', desc:'Add 9', algIn:'3x', algOut:'3x + 9'},
-    {op:'÷ 3', desc:'Divide by 3', algIn:'3x + 9', algOut:'x + 3'},
-    {op:'− n', desc:'Subtract your number', algIn:'x + 3', algOut:'3'}
-  ], fns:[n=>3*n, n=>n+9, n=>n/3, (n,orig)=>n-orig] },
-  { name:'Mystery 5', final:5, steps:[
-    {op:'× 2', desc:'Double it', algIn:'x', algOut:'2x'},
-    {op:'+ 10', desc:'Add 10', algIn:'2x', algOut:'2x + 10'},
-    {op:'÷ 2', desc:'Halve it', algIn:'2x + 10', algOut:'x + 5'},
-    {op:'− n', desc:'Subtract your number', algIn:'x + 5', algOut:'5'}
-  ], fns:[n=>2*n, n=>n+10, n=>n/2, (n,orig)=>n-orig] },
-  { name:'Always 7', final:7, steps:[
-    {op:'+ 3', desc:'Add 3', algIn:'x', algOut:'x + 3'},
-    {op:'× 2', desc:'Double it', algIn:'x + 3', algOut:'2x + 6'},
-    {op:'− 2', desc:'Subtract 2', algIn:'2x + 6', algOut:'2x + 4'},
-    {op:'÷ 2', desc:'Halve it', algIn:'2x + 4', algOut:'x + 2'},
-    {op:'+ 5', desc:'Add 5', algIn:'x + 2', algOut:'x + 7'},
-    {op:'− n', desc:'Subtract your number', algIn:'x + 7', algOut:'7'}
-  ], fns:[n=>n+3, n=>2*n, n=>n-2, n=>n/2, n=>n+5, (n,orig)=>n-orig] },
-  { name:'Always 1', final:1, steps:[
-    {op:'+ 1', desc:'Add 1', algIn:'x', algOut:'x + 1'},
-    {op:'× 2', desc:'Double', algIn:'x + 1', algOut:'2x + 2'},
-    {op:'+ 4', desc:'Add 4', algIn:'2x + 2', algOut:'2x + 6'},
-    {op:'÷ 2', desc:'Halve', algIn:'2x + 6', algOut:'x + 3'},
-    {op:'− 2', desc:'Subtract 2', algIn:'x + 3', algOut:'x + 1'},
-    {op:'− n', desc:'Subtract your number', algIn:'x + 1', algOut:'1'}
-  ], fns:[n=>n+1, n=>2*n, n=>n+4, n=>n/2, n=>n-2, (n,orig)=>n-orig] },
-  { name:'Always 10', final:10, steps:[
-    {op:'× 4', desc:'Multiply by 4', algIn:'x', algOut:'4x'},
-    {op:'+ 20', desc:'Add 20', algIn:'4x', algOut:'4x + 20'},
-    {op:'÷ 2', desc:'Halve', algIn:'4x + 20', algOut:'2x + 10'},
-    {op:'÷ 2', desc:'Halve again', algIn:'2x + 10', algOut:'x + 5'},
-    {op:'+ 5', desc:'Add 5', algIn:'x + 5', algOut:'x + 10'},
-    {op:'− n', desc:'Subtract your number', algIn:'x + 10', algOut:'10'}
-  ], fns:[n=>4*n, n=>n+20, n=>n/2, n=>n/2, n=>n+5, (n,orig)=>n-orig] },
-  { name:'Always 0', final:0, steps:[
-    {op:'× 3', desc:'Triple', algIn:'x', algOut:'3x'},
-    {op:'+ 12', desc:'Add 12', algIn:'3x', algOut:'3x + 12'},
-    {op:'÷ 3', desc:'Divide by 3', algIn:'3x + 12', algOut:'x + 4'},
-    {op:'− 4', desc:'Subtract 4', algIn:'x + 4', algOut:'x'},
-    {op:'− n', desc:'Subtract your number', algIn:'x', algOut:'0'}
-  ], fns:[n=>3*n, n=>n+12, n=>n/3, n=>n-4, (n,orig)=>n-orig] }
+const MONTHS_ABR=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const SPECIAL_DATES=[[1,26,'Republic Day'],[8,15,'Independence Day'],[10,2,'Gandhi Jayanti'],
+  [11,14,"Children's Day"],[1,1,'New Year'],[12,25,'Christmas'],[2,14,"Valentine's Day"]];
+
+const TRICKS=[
+  {name:'Classic 2',final:2,steps:[
+    {op:'× 2',desc:'Double it',alg:'2x'},
+    {op:'+ 4',desc:'Add 4',alg:'2x + 4'},
+    {op:'÷ 2',desc:'Halve it',alg:'x + 2'},
+    {op:'− n',desc:'Subtract your number',alg:'2'},
+  ],fns:[n=>2*n,n=>n+4,n=>n/2,(n,o)=>n-o]},
+  {name:'Triple 3',final:3,steps:[
+    {op:'× 3',desc:'Triple it',alg:'3x'},
+    {op:'+ 9',desc:'Add 9',alg:'3x + 9'},
+    {op:'÷ 3',desc:'Divide by 3',alg:'x + 3'},
+    {op:'− n',desc:'Subtract your number',alg:'3'},
+  ],fns:[n=>3*n,n=>n+9,n=>n/3,(n,o)=>n-o]},
+  {name:'Always 7',final:7,steps:[
+    {op:'+ 3',desc:'Add 3',alg:'x + 3'},
+    {op:'× 2',desc:'Double it',alg:'2x + 6'},
+    {op:'− 2',desc:'Subtract 2',alg:'2x + 4'},
+    {op:'÷ 2',desc:'Halve it',alg:'x + 2'},
+    {op:'+ 5',desc:'Add 5',alg:'x + 7'},
+    {op:'− n',desc:'Subtract your number',alg:'7'},
+  ],fns:[n=>n+3,n=>2*n,n=>n-2,n=>n/2,n=>n+5,(n,o)=>n-o]},
+  {name:'Always 10',final:10,steps:[
+    {op:'× 4',desc:'Multiply by 4',alg:'4x'},
+    {op:'+ 20',desc:'Add 20',alg:'4x + 20'},
+    {op:'÷ 2',desc:'Halve it',alg:'2x + 10'},
+    {op:'÷ 2',desc:'Halve again',alg:'x + 5'},
+    {op:'+ 5',desc:'Add 5',alg:'x + 10'},
+    {op:'− n',desc:'Subtract your number',alg:'10'},
+  ],fns:[n=>4*n,n=>n+20,n=>n/2,n=>n/2,n=>n+5,(n,o)=>n-o]},
+  {name:'Always 0',final:0,steps:[
+    {op:'× 3',desc:'Triple it',alg:'3x'},
+    {op:'+ 12',desc:'Add 12',alg:'3x + 12'},
+    {op:'÷ 3',desc:'Divide by 3',alg:'x + 4'},
+    {op:'− 4',desc:'Subtract 4',alg:'x'},
+    {op:'− n',desc:'Subtract your number',alg:'0'},
+  ],fns:[n=>3*n,n=>n+12,n=>n/3,n=>n-4,(n,o)=>n-o]},
+  {name:'Mystery 5',final:5,steps:[
+    {op:'× 2',desc:'Double it',alg:'2x'},
+    {op:'+ 10',desc:'Add 10',alg:'2x + 10'},
+    {op:'÷ 2',desc:'Halve it',alg:'x + 5'},
+    {op:'− n',desc:'Subtract your number',alg:'5'},
+  ],fns:[n=>2*n,n=>n+10,n=>n/2,(n,o)=>n-o]},
 ];
 
-const SPECIAL_DATES = [
-  [1,26,'Republic Day'], [8,15,'Independence Day'], [10,2,'Gandhi Jayanti'],
-  [11,14,"Children's Day"], [1,1,'New Year'], [3,8,"Women's Day"],
-  [12,25,'Christmas'], [10,31,'Halloween'], [2,14,"Valentine's Day"]
-];
+let trickIdx=0,num=7,step=0;
 
-const MONTHS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
-const DATE_STEPS = [
-  { label:'Multiply month by 5', fn:(M,D)=>M*5, alg:'5M' },
-  { label:'Add 6', fn:(_,__,prev)=>prev+6, alg:'5M + 6' },
-  { label:'Multiply by 4', fn:(_,__,prev)=>prev*4, alg:'20M + 24' },
-  { label:'Add 9', fn:(_,__,prev)=>prev+9, alg:'20M + 33' },
-  { label:'Multiply by 5', fn:(_,__,prev)=>prev*5, alg:'100M + 165' },
-  { label:'Add the day number', fn:(_,D,prev)=>prev+D, alg:'100M + 165 + D' }
-];
-
-// ============ STATE ============
-let state = {
-  view:'num',
-  trickIdx:0,
-  num:7,
-  numStep:0,
-  dateIdx:0,
-  M:1, D:26,
-  dateStep:0,
-  decode:''
-};
-
-// ============ HELPERS ============
-const $ = (s,p=document)=>p.querySelector(s);
-const $$ = (s,p=document)=>[...p.querySelectorAll(s)];
-
-function el(tag, attrs={}, ...kids){
-  const n = document.createElement(tag);
-  for(const k in attrs){
-    if(k==='class') n.className = attrs[k];
-    else if(k==='html') n.innerHTML = attrs[k];
-    else if(k.startsWith('on')) n.addEventListener(k.slice(2), attrs[k]);
-    else n.setAttribute(k, attrs[k]);
-  }
-  for(const kid of kids){
-    if(kid==null) continue;
-    n.append(kid.nodeType ? kid : document.createTextNode(kid));
-  }
-  return n;
-}
-
-// ============ RENDER TRICK PILLS ============
-function renderTrickPills(){
-  const c = $('#trick-pills');
-  c.innerHTML = '';
+function buildTrickPills(){
+  const bar=document.getElementById('tricks-bar');bar.innerHTML='';
   TRICKS.forEach((t,i)=>{
-    const p = el('button',{
-      class:'pill'+(i===state.trickIdx?' active':''),
-      onclick:()=>{ state.trickIdx=i; state.numStep=0; state.num=7; $('#num-input').value=7; $('#num-display').textContent=7; renderTrickPills(); renderNum(); }
+    const p=document.createElement('button');
+    p.className='trick-pill'+(i===trickIdx?' active':'');
+    p.innerHTML=t.name+`<span class="tout">→ ${t.final}</span>`;
+    p.addEventListener('pointerdown',e=>{e.preventDefault();
+      trickIdx=i;step=0;
+      document.getElementById('num-sl').value=num;renderNum();
+      buildTrickPills();
     });
-    p.innerHTML = t.name + '<span class="out">→ '+t.final+'</span>';
-    c.append(p);
+    bar.appendChild(p);
   });
 }
 
-// ============ RENDER NUMBER TRICK ============
 function renderNum(){
-  const t = TRICKS[state.trickIdx];
-  const orig = state.num;
-  const vals = [orig];
-  t.fns.forEach(fn=> vals.push(fn(vals[vals.length-1], orig)) );
+  const t=TRICKS[trickIdx];const orig=num;
+  const vals=[orig];
+  t.fns.forEach(fn=>vals.push(fn(vals[vals.length-1],orig)));
 
   // Steps
-  const sc = $('#steps-num');
-  sc.innerHTML = '';
-  t.steps.forEach((step,i)=>{
-    const done = state.numStep > i;
-    const current = state.numStep === i+1 && state.numStep <= t.steps.length;
-    const cls = 'step' + (done?' done':'') + (current?' current':'');
-    const row = el('div',{class:cls});
-    row.append(el('div',{class:'step-num'}, done ? step.op : String(i+1)));
-    const body = el('div',{class:'step-body'});
-    body.append(el('div',{class:'step-desc'}, step.desc));
-    if(done){
-      const calc = el('div',{class:'step-calc'});
-      calc.innerHTML = '<span class="from">'+vals[i]+'</span><span class="arrow">→</span><span class="to">'+vals[i+1]+'</span>';
-      body.append(calc);
-    }
-    row.append(body);
-    sc.append(row);
+  const sl=document.getElementById('steps-list');sl.innerHTML='';
+  t.steps.forEach((s,i)=>{
+    const done=step>i,curr=step===i+1&&step<=t.steps.length;
+    const row=document.createElement('div');
+    row.className='step-row'+(done?' done':'')+(curr?' current':'');
+    row.innerHTML=`
+      <div class="step-num">${done?s.op:String(i+1)}</div>
+      <div style="flex:1">
+        <div class="step-desc">${s.desc}</div>
+        ${done?`<div><span class="step-calc">${vals[i]}</span><span class="step-arrow">→</span><span class="step-result">${vals[i+1]}</span></div>`:''}
+      </div>`;
+    sl.appendChild(row);
   });
+
+  // Result area
+  const ra=document.getElementById('result-area');ra.innerHTML='';
+  if(step>=t.steps.length){
+    ra.innerHTML=`<div class="result-box">
+      <div class="rb-lbl">The answer is always…</div>
+      <div class="rb-num">${t.final}</div>
+      <div class="rb-note">no matter what number you started with</div>
+    </div>`;
+  }
 
   // Controls
-  const cc = $('#num-controls');
-  cc.innerHTML = '';
-  const finished = state.numStep >= t.steps.length;
+  const cr=document.getElementById('ctrl-row');cr.innerHTML='';
+  const finished=step>=t.steps.length;
   if(!finished){
-    cc.append(el('button',{class:'btn btn-primary', onclick:()=>{
-      state.numStep = Math.min(state.numStep+1, t.steps.length);
-      renderNum();
-    }}, state.numStep===0 ? 'Start' : (state.numStep===t.steps.length-1 ? 'Final step' : 'Next step')));
-    if(state.numStep > 0){
-      cc.append(el('button',{class:'btn', onclick:()=>{ state.numStep=t.steps.length; renderNum(); }}, 'Show all'));
-    }
+    cr.innerHTML=`<button class="c-btn primary" id="next-step">${step===0?'Start':step===t.steps.length-1?'Final step →':'Next step →'}</button>`;
+    if(step>0) cr.innerHTML+=`<button class="c-btn" id="show-all">Show all</button>`;
+    document.getElementById('next-step').addEventListener('click',()=>{step=Math.min(step+1,t.steps.length);renderNum();});
+    const sa=document.getElementById('show-all');if(sa)sa.addEventListener('click',()=>{step=t.steps.length;renderNum();});
   } else {
-    cc.append(el('button',{class:'btn', onclick:()=>{ state.numStep=0; renderNum(); }}, 'Reset'));
-    cc.append(el('button',{class:'btn', onclick:()=>{
-      const newN = state.num===7 ? 13 : (state.num===13 ? 4 : 7);
-      state.num = newN;
-      $('#num-input').value = newN;
-      $('#num-display').textContent = newN;
-      state.numStep = 0;
-      renderNum();
-    }}, 'Try different number'));
-    cc.append(el('button',{class:'btn', onclick:()=>{
-      state.trickIdx = (state.trickIdx+1) % TRICKS.length;
-      state.numStep = 0;
-      renderTrickPills();
-      renderNum();
-    }}, 'Next trick →'));
+    cr.innerHTML=`<button class="c-btn" id="reset-trick">Reset</button>
+      <button class="c-btn" id="next-trick">Next trick →</button>`;
+    document.getElementById('reset-trick').addEventListener('click',()=>{step=0;renderNum();});
+    document.getElementById('next-trick').addEventListener('click',()=>{
+      trickIdx=(trickIdx+1)%TRICKS.length;step=0;buildTrickPills();renderNum();
+    });
   }
 
-  // Result
-  const rc = $('#num-result');
-  rc.innerHTML = '';
-  if(finished){
-    const r = el('div',{class:'result'});
-    r.append(el('div',{class:'result-label'},'No matter what number you chose...'));
-    r.append(el('div',{class:'result-num'}, String(t.final)));
-    const note = el('div',{class:'result-note'});
-    note.innerHTML = 'The answer is <strong>always '+t.final+'</strong>';
-    r.append(note);
-    rc.append(r);
-  }
-
-  // Algebra side
-  const ac = $('#alg-num');
-  ac.innerHTML = '';
-  t.steps.forEach((step,i)=>{
-    const done = state.numStep > i;
-    const final = done && i === t.steps.length-1;
-    const row = el('div',{class:'alg-row'+(done?' done':'')+(final?' final':'')});
-    row.append(el('div',{class:'alg-num'}, String(i+1)));
-    const body = el('div',{class:'alg-body'});
-    body.append(el('div',{class:'alg-desc'}, step.desc));
-    body.append(el('div',{class:'alg-expr'}, done ? step.algOut : '?'));
-    row.append(body);
-    ac.append(row);
+  // Algebra
+  const as=document.getElementById('alg-steps');as.innerHTML='';
+  t.steps.forEach((s,i)=>{
+    const done=step>i,final=done&&i===t.steps.length-1;
+    const row=document.createElement('div');
+    row.className='alg-row'+(done?' done':'')+(final?' final':'');
+    row.innerHTML=`<div class="ar-num">${i+1}</div>
+      <div style="flex:1"><div class="ar-desc">${s.desc}</div></div>
+      <div class="ar-expr">${done?s.alg:'?'}</div>`;
+    as.appendChild(row);
   });
+  const ai=document.getElementById('alg-insight');
+  if(finished){
+    ai.style.display='block';
+    ai.innerHTML=`<strong>Why x disappeared:</strong> the operations were designed so every +x is eventually cancelled by a -x. The result is a constant — the same constant for every possible starting value.`;
+  } else {ai.style.display='none';}
 }
 
-$('#num-input').addEventListener('input', e=>{
-  state.num = +e.target.value;
-  state.numStep = 0;
-  $('#num-display').textContent = state.num;
-  renderNum();
+document.getElementById('num-sl').addEventListener('input',e=>{
+  num=+e.target.value;document.getElementById('num-box').textContent=num;step=0;renderNum();
 });
 
-// ============ DATE TRICK ============
-function renderDatePills(){
-  const c = $('#date-pills');
-  c.innerHTML = '';
+// ═══ DATE TRICK ═══
+let dateIdx=0,dateM=1,dateD=26;
+const DATE_STEPS=[
+  {l:'Multiply month by 5',fn:(M,D)=>M*5,alg:'5M'},
+  {l:'Add 6',fn:(_,__,p)=>p+6,alg:'5M + 6'},
+  {l:'Multiply by 4',fn:(_,__,p)=>p*4,alg:'20M + 24'},
+  {l:'Add 9',fn:(_,__,p)=>p+9,alg:'20M + 33'},
+  {l:'Multiply by 5',fn:(_,__,p)=>p*5,alg:'100M + 165'},
+  {l:'Add the day number',fn:(_,D,p)=>p+D,alg:'100M + 165 + D'},
+];
+
+function buildDatePills(){
+  const bar=document.getElementById('date-pills');bar.innerHTML='';
   SPECIAL_DATES.forEach(([m,d,name],i)=>{
-    const p = el('button',{
-      class:'pill'+(i===state.dateIdx?' active':''),
-      onclick:()=>{
-        state.dateIdx = i;
-        state.M = m;
-        state.D = d;
-        state.dateStep = 0;
-        state.decode = '';
-        $('#decode-input').value = '';
-        renderDatePills();
-        renderDate();
-      }
+    const p=document.createElement('button');
+    p.className='date-pill'+(i===dateIdx?' active':'');
+    p.textContent=name;
+    p.addEventListener('pointerdown',e=>{e.preventDefault();
+      dateIdx=i;dateM=m;dateD=d;
+      document.querySelectorAll('.date-pill').forEach((x,j)=>x.classList.toggle('active',j===i));
+      renderDate();
     });
-    p.innerHTML = name + '<span class="out">'+d+'/'+m+'</span>';
-    c.append(p);
+    bar.appendChild(p);
   });
 }
 
 function renderDate(){
-  // Header date display
-  const dd = $('#date-display');
-  dd.innerHTML = state.D+'/'+state.M+'<span class="sub">('+MONTHS[state.M]+' '+state.D+')</span>';
+  const M=dateM,D=dateD;
+  document.getElementById('date-display').innerHTML=D+'/'+M+`<span>${MONTHS_ABR[M]} ${D}</span>`;
+  const vals=[null];DATE_STEPS.forEach(s=>vals.push(s.fn(M,D,vals[vals.length-1])));
+  const final=vals[DATE_STEPS.length];
 
-  // Compute values
-  const vals = [null];
+  // Step rows
+  const rows=document.getElementById('date-steps-row');rows.innerHTML='';
   DATE_STEPS.forEach((s,i)=>{
-    vals.push(s.fn(state.M, state.D, vals[vals.length-1]));
+    const row=document.createElement('div');row.className='ic-row';
+    row.innerHTML=`<span class="ic-lbl">${s.l}</span><span class="ic-val${i===DATE_STEPS.length-1?' big':''}">${vals[i+1]}</span>`;
+    rows.appendChild(row);
   });
 
-  // Controls
-  const cc = $('#date-controls');
-  cc.innerHTML = '';
-  const total = DATE_STEPS.length;
-  if(state.dateStep < total){
-    cc.append(el('button',{class:'btn btn-primary', onclick:()=>{ state.dateStep++; renderDate(); }},
-      state.dateStep===0 ? 'Start' : 'Next →'));
-  }
-  if(state.dateStep > 0 && state.dateStep < total){
-    cc.append(el('button',{class:'btn', onclick:()=>{ state.dateStep=total; renderDate(); }}, 'Show all'));
-  }
-  if(state.dateStep === total){
-    cc.append(el('button',{class:'btn', onclick:()=>{ state.dateStep=0; renderDate(); }}, 'Reset'));
-  }
-
-  // Steps
-  const sc = $('#steps-date');
-  sc.innerHTML = '';
-  DATE_STEPS.forEach((step,i)=>{
-    const done = state.dateStep > i;
-    const current = state.dateStep === i+1;
-    const cls = 'step' + (done?' done':'') + (current?' current':'');
-    const row = el('div',{class:cls});
-    row.append(el('div',{class:'step-num'}, String(i+1)));
-    const body = el('div',{class:'step-body',style:'display:flex;justify-content:space-between;align-items:center'});
-    body.append(el('div',{class:'step-desc'}, step.label));
-    body.append(el('div',{class:'step-val'+(done?'':' pending')}, done ? String(vals[i+1]) : '—'));
-    row.append(body);
-    sc.append(row);
-  });
-
-  // Result
-  const rc = $('#date-result');
-  rc.innerHTML = '';
-  if(state.dateStep === total){
-    const r = el('div',{class:'result'});
-    r.append(el('div',{class:'result-label'},'Your final answer:'));
-    r.append(el('div',{class:'result-num'}, String(vals[total])));
-    rc.append(r);
-  }
-
-  // Algebra
-  const ac = $('#alg-date');
-  ac.innerHTML = '';
-  DATE_STEPS.forEach((step,i)=>{
-    const row = el('div',{style:'display:flex;justify-content:space-between;padding:8px 12px;border-radius:7px;background:var(--surface2);border:1.5px solid var(--border)'+(i>0?';margin-top:5px':'')});
-    row.append(el('div',{style:'font-size:12px;color:var(--text2)'}, step.label));
-    row.append(el('div',{style:'font-size:13px;font-weight:600;color:var(--blue);font-family:var(--mono)'}, step.alg));
-    ac.append(row);
-  });
+  // Step vis
+  const sv=document.getElementById('date-step-vis');
+  sv.innerHTML=DATE_STEPS.map((s,i)=>`Step ${i+1}: ${s.l}\n→ <span class="sv-hl">${vals[i+1]}</span>  (${s.alg})`).join('\n\n')+
+    `\n\n<span class="sv-green">Final answer: ${final}</span>`;
 }
 
-$('#decode-input').addEventListener('input', e=>{
-  const v = e.target.value;
-  const rc = $('#decode-result');
-  rc.innerHTML = '';
-  if(v.length < 3){ return; }
-  const n = parseInt(v);
-  if(isNaN(n) || n < 200){
-    rc.append(el('div',{class:'err'},'Not a valid answer — check the number'));
-    return;
+document.getElementById('decode-inp').addEventListener('input',e=>{
+  const v=+e.target.value;const res=document.getElementById('decode-res');
+  if(!v||isNaN(v)){res.style.display='none';return;}
+  const stripped=v-165;const M=Math.floor(stripped/100),D=stripped%100;
+  res.style.display='block';
+  if(M>=1&&M<=12&&D>=1&&D<=31){
+    res.className='decode-result';
+    res.textContent=`${v} − 165 = ${stripped} → Month = ${M}, Day = ${D} → ${MONTHS_ABR[M]} ${D}`;
+  } else {
+    res.className='decode-result decode-err';
+    res.textContent='Not a valid answer — check the number';
   }
-  const stripped = n - 165;
-  const M = Math.floor(stripped/100);
-  const D = stripped % 100;
-  if(M < 1 || M > 12 || D < 1 || D > 31){
-    rc.append(el('div',{class:'err'},'Not a valid date — check the number'));
-    return;
-  }
-  const box = el('div',{class:'decode-box'});
-  box.append(el('div',{style:'font-size:13px;color:var(--text2)'},'Their date was:'));
-  box.append(el('div',{class:'decode-month'}, MONTHS[M]+' '+D));
-  box.append(el('div',{class:'decode-calc'}, n+' − 165 = '+stripped+' → M='+M+', D='+D));
-  rc.append(box);
 });
 
-// ============ TABS ============
-$$('.tab').forEach(t=>{
-  t.addEventListener('click', ()=>{
-    $$('.tab').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    const v = t.dataset.view;
-    state.view = v;
-    $('#view-num').style.display = v==='num' ? 'block' : 'none';
-    $('#view-date').style.display = v==='date' ? 'block' : 'none';
-  });
-});
+// ═══ TABS ═══
+document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById('view-num').style.display=b.dataset.t==='num'?'block':'none';
+  document.getElementById('view-date').style.display=b.dataset.t==='date'?'block':'none';
+}));
 
-// ============ INIT ============
-renderTrickPills();
-renderNum();
-renderDatePills();
-renderDate();
+buildTrickPills();renderNum();
+buildDatePills();renderDate();
 </script>
 </body>
 </html>
